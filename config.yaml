@@ -1,0 +1,81 @@
+data:
+  raw_path: data/telco_churn.csv
+  test_size: 0.20
+  random_state: 42
+
+features:
+  target: Churn
+  drop_cols:
+    - customerID
+  binary_cols:
+    gender:            {"Male": 1, "Female": 0}
+    Partner:           {"Yes": 1, "No": 0}
+    Dependents:        {"Yes": 1, "No": 0}
+    PhoneService:      {"Yes": 1, "No": 0}
+    PaperlessBilling:  {"Yes": 1, "No": 0}
+  ohe_cols:
+    - MultipleLines
+    - InternetService
+    - OnlineSecurity
+    - OnlineBackup
+    - DeviceProtection
+    - TechSupport
+    - StreamingTV
+    - StreamingMovies
+    - Contract
+    - PaymentMethod
+  service_cols:
+    - OnlineSecurity
+    - OnlineBackup
+    - DeviceProtection
+    - TechSupport
+    - StreamingTV
+    - StreamingMovies
+
+models:
+  logistic_regression:
+    C: 1.0
+    max_iter: 1000
+    solver: lbfgs
+    class_weight: balanced
+    random_state: 42
+
+  random_forest:
+    n_estimators: 200
+    max_depth: 8
+    min_samples_leaf: 4
+    max_features: sqrt
+    class_weight: balanced
+    n_jobs: -1
+    random_state: 42
+
+  gradient_boosting:
+    n_estimators: 200
+    learning_rate: 0.08
+    max_depth: 4
+    subsample: 0.85
+    min_samples_leaf: 4
+    max_features: 0.8
+    random_state: 42
+
+  xgboost:
+    n_estimators: 200
+    learning_rate: 0.08
+    max_depth: 4
+    subsample: 0.85
+    colsample_bytree: 0.85
+    reg_alpha: 0.1
+    reg_lambda: 1.0
+    eval_metric: logloss
+    random_state: 42
+    verbosity: 0
+    n_jobs: -1
+
+training:
+  cv_folds: 5
+  scoring: roc_auc
+  output_dir: models
+
+evaluation:
+  figures_dir: figures
+  threshold_range: [0.05, 0.95, 0.01]
